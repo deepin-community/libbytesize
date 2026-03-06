@@ -16,12 +16,12 @@
 %define configure_opts %{?python3_opts} %{?tools_opts}
 
 Name:        libbytesize
-Version:     2.6
+Version:     2.12
 Release:     1%{?dist}
 Summary:     A library for working with sizes in bytes
-License:     LGPLv2+
+License:     LGPL-2.1-or-later
 URL:         https://github.com/storaged-project/libbytesize
-Source0:     https://github.com/storaged-project/libbytesize/releases/download/%{version}-%{release}/%{name}-%{version}.tar.gz
+Source0:     https://github.com/storaged-project/libbytesize/releases/download/%{version}/%{name}-%{version}.tar.gz
 
 BuildRequires: make
 BuildRequires: gcc
@@ -54,7 +54,6 @@ with the libbytesize library.
 %package -n python3-%{realname}
 Summary: Python 3 bindings for libbytesize
 Requires: %{name}%{?_isa} = %{version}-%{release}
-Requires: python3-six
 
 %description -n python3-%{realname}
 This package contains Python 3 bindings for libbytesize making the use of
@@ -115,6 +114,97 @@ find %{buildroot} -type f -name "*.la" | xargs %{__rm}
 %endif
 
 %changelog
+* Thu Dec 04 2025 Vojtech Trefny <vtrefny@redhat.com> - 2.12-1
+- Fix compilation with C23 (vtrefny)
+- HACKING: Update directions for updating documentation (vtrefny)
+- infra: bump actions/checkout from 5 to 6 (49699333+dependabot[bot])
+- infra: bump actions/upload-artifact from 4 to 5 (49699333+dependabot[bot])
+- infra: bump actions/checkout from 4 to 5 (49699333+dependabot[bot])
+- misc: Do not use "with_items" when installing packages (vtrefny)
+- misc: Use --break-system-packages for pip on Debian (vtrefny)
+- misc: Add build and test dependecies for CentOS (vtrefny)
+- misc: Separate Ansible tasks into a different file (vtrefny)
+- tests: Split locale tests into multiple test cases (vtrefny)
+- packit: Bump release only for daily Copr builds (vtrefny)
+
+* Tue Aug 20 2024 Vojtech Trefny <vtrefny@redhat.com> - 2.11-1
+- infra: bump actions/upload-artifact from 3 to 4 (49699333+dependabot[bot])
+- ci: Add dependabot to automatically update GH actions (vtrefny)
+- tests: remove unnecessary bash dependency (triallax)
+- ci: Update CentOS Stream repositories for Packit (vtrefny)
+- ci: Set custom release number for Packit (vtrefny)
+- Translated using Weblate (Korean) (simmon)
+- Translated using Weblate (Sinhala) (noreply-mt-weblate-translation-memory)
+- Translated using Weblate (Japanese) (simmon)
+- Added translation using Weblate (Japanese) (simmon)
+- Update translation files (noreply)
+- Translated using Weblate (Korean) (simmon)
+
+* Wed Oct 18 2023 Vojtech Trefny <vtrefny@redhat.com> - 2.10-1
+- Rename 'master' branch to 'main' (vtrefny)
+- remove dependency on python3-six and python2 crumbs (alexandre.detiste)
+- ci: Bump actions/checkout from v3 to v4 (vtrefny)
+- Squashed 'translation-canary/' changes from 4d4e65b..5bb8125 (vtrefny)
+- dist: Fix release number in spec (vtrefny)
+
+* Wed Jul 05 2023 Vojtech Trefny <vtrefny@redhat.com> - 2.9-1
+- build: Exit before AC_OUTPUT on error (tbzatek)
+- tests: fix locale tests on musl (triallax)
+- Update translation files (noreply)
+- Translated using Weblate (Korean) (simmon)
+- ci: Manually prepare spec file for Packit (vtrefny)
+
+* Thu Mar 23 2023 Vojtech Trefny <vtrefny@redhat.com> - 2.8-1
+- ci: Do not use release descriptions for Packit builds (vtrefny)
+- Do not hardcode pylint executable name in Makefile (vtrefny)
+- Remove unused test dependencies variables from Makefile (vtrefny)
+- docs: Remove information about Python 2 support (vtrefny)
+- Various docstring fixes (vtrefny)
+- Replace C++ style comments with C style (vtrefny)
+- Make use of error optional (vtrefny)
+- spec: Fix source archive URL (vtrefny)
+- ci: Add Packit automation for downstream builds (vtrefny)
+- spec: Bump release to 21 for Packit daily builds (vtrefny)
+- ci: Use Packit for daily builds in Copr (vtrefny)
+- ci: Remove GitHub action for RPM builds (vtrefny)
+- ci: Add Packit configuration for RPM builds on pull requests (vtrefny)
+- configure.ac: Remove invalid email address for bug reports (vtrefny)
+- ci: Update chroots for RPM builds (vtrefny)
+- Translated using Weblate (Kazakh) (baurthefirst)
+- Added translation using Weblate (Kazakh) (baurthefirst)
+- misc: Remove "warn: false" from Ansible "command" (vtrefny)
+- Translated using Weblate (Georgian) (temuri.doghonadze)
+- spec: Change license string to the SPDX format required by Fedora (vtrefny)
+- Added translation using Weblate (Georgian) (temuri.doghonadze)
+- Update translation files (noreply)
+- Translated using Weblate (Korean) (simmon)
+- ci: Update Fedora versions for RPM build tests (vtrefny)
+- ci: Rename csmock.Dockerfile to ci.Dockerfile (vtrefny)
+- ci: Update the csmock GitHub actions configuration (vtrefny)
+- ci: Run rpmbuild tests in GitHub actions (vtrefny)
+- Add a GitHub action for running csmock static analysis (vtrefny)
+- README: Remove the Travis CI badge (vtrefny)
+- Sync spec with downstream (vtrefny)
+
+* Wed May 25 2022 Vojtech Trefny <vtrefny@redhat.com> - 2.7-1
+- Fix skipping tests when required locale is missing (vtrefny)
+- Remove Travis CI configuration (vtrefny)
+- Fix some warnings and typos in docstrings and comments (vtrefny)
+- Fix warnings dicovered by the GCC analyzer (vtrefny)
+- build: avoid bashisms in configure (sam)
+- Update translation files (noreply)
+- Translated using Weblate (Croatian) (linux.hr)
+- Revert "Translations update from Weblate" (vtrefny)
+- Update translation files (noreply)
+- Added translation using Weblate (Croatian) (linux.hr)
+- Do not use distutils to get Python library path (vtrefny)
+
+* Thu Jan 20 2022 Fedora Release Engineering <releng@fedoraproject.org> - 2.6-3
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_36_Mass_Rebuild
+
+* Thu Jul 22 2021 Fedora Release Engineering <releng@fedoraproject.org> - 2.6-2
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_35_Mass_Rebuild
+
 * Wed Jul 07 2021 Vojtech Trefny <vtrefny@redhat.com> - 2.6-1
 - Make sure Size can be interpreted as integer in Python 3.10 (vtrefny)
 - Translated using Weblate (Finnish) (ricky.tigg)
@@ -124,6 +214,9 @@ find %{buildroot} -type f -name "*.la" | xargs %{__rm}
 - Update translation files (noreply)
 - Added translation using Weblate (Sinhala) (r45xveza)
 - Sync spec with downstream (vtrefny)
+
+* Thu Jun 03 2021 Python Maint <python-maint@redhat.com> - 2.5-2
+- Rebuilt for Python 3.10
 
 * Wed Jan 27 2021 Vojtech Trefny <vtrefny@redhat.com> - 2.5-1
 - Translated using Weblate (Hebrew) (sh.yaron)

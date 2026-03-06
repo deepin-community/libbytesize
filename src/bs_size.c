@@ -31,7 +31,7 @@
  * #BSSize is a type that facilitates work with sizes in bytes by providing
  * functions/methods that are required for parsing users input when entering
  * size, showing size in nice human-readable format, storing sizes bigger than
- * %UINT64_MAX and doing calculations with sizes without loss of
+ * UINT64_MAX and doing calculations with sizes without loss of
  * precision/information. The class is able to hold negative sizes and do
  * operations on/with them, but some of the (division and multiplication)
  * operations simply ignore the signs of the operands (check the documentation).
@@ -128,7 +128,7 @@ static char *strdup_printf (const char *fmt, ...) {
 /**
  * replace_char_with_str: (skip)
  *
- * Replaces all apperances of @char in @str with @new.
+ * Replaces all appearances of @char in @str with @new.
  */
 static char *replace_char_with_str (const char *str, char orig, const char *new) {
     uint64_t offset = 0;
@@ -147,6 +147,8 @@ static char *replace_char_with_str (const char *str, char orig, const char *new)
     /* allocate space for the string [strlen(str)] with the char replaced by the
        string [strlen(new) - 1] $count times and a \0 byte at the end [ + 1] */
     ret = malloc (sizeof(char) * (strlen(str) + (strlen(new) - 1) * count + 1));
+    if (!ret)
+        return NULL;
 
     for (i=0; str[i]; i++) {
         if (str[i] == orig)
@@ -171,7 +173,7 @@ static char *replace_char_with_str (const char *str, char orig, const char *new)
  * Replaces the first appearance of @orig in @str with @new.
  */
 static char *replace_str_with_str (const char *str, const char *orig, const char *new) {
-    char *pos = NULL;
+    const char *pos = NULL;
     int str_len = 0;
     int orig_len = 0;
     int new_len = 0;
@@ -189,6 +191,8 @@ static char *replace_str_with_str (const char *str, const char *orig, const char
     new_len = strlen (new);
     ret_size = str_len + new_len - orig_len + 1;
     ret = malloc (sizeof(char) * ret_size);
+    if (!ret)
+        return NULL;
     memset (ret, 0, ret_size);
     memcpy (ret, str, pos - str);
     dest = ret + (pos - str);
@@ -248,7 +252,7 @@ static bool multiply_size_by_unit (mpfr_t size, char *unit_str) {
         }
 
     /* not found among the binary and decimal units, let's try their translated
-       verions */
+       versions */
     for (bunit=BS_BUNIT_B; bunit < BS_BUNIT_UNDEF; bunit++)
         if (strncasecmp (unit_str, _(b_units[bunit-BS_BUNIT_B]), unit_str_len) == 0) {
             pwr = (uint64_t) bunit - BS_BUNIT_B;
@@ -276,7 +280,16 @@ static bool multiply_size_by_unit (mpfr_t size, char *unit_str) {
  * Sets @error to @code and @msg (if not %NULL). **TAKES OVER @msg.**
  */
 static void set_error (BSError **error, BSErrorCode code, char *msg) {
+    if (error == NULL) {
+        free (msg);
+        return;
+    }
+
     *error = (BSError *) malloc (sizeof(BSError));
+    if (*error == NULL) {
+        free (msg);
+        return;
+    }
     (*error)->code = code;
     (*error)->msg = msg;
     return;
@@ -340,6 +353,7 @@ static void mul_64bit (mpz_t rop, const mpz_t op1, uint64_t op2) {
  * *************/
 /**
  * bs_size_free:
+ * @size: (nullable): %BSSize to free
  *
  * Clears @size and frees the allocated resources.
  */
@@ -353,6 +367,7 @@ void bs_size_free (BSSize size) {
 
 /**
  * bs_clear_error:
+ * @error: (nullable): %BSError to clear
  *
  * Clears @error and frees the allocated resources.
  */
@@ -413,6 +428,7 @@ BSSize bs_size_new_from_bytes (uint64_t bytes, int sgn) {
  * bs_size_new_from_str: (constructor)
  * @size_str: string representing the size as a number and an optional unit
  *            (e.g. "1 GiB")
+ * @error: (out) (optional): place to store error (if any)
  *
  * Creates a new #BSSize instance.
  *
@@ -455,12 +471,12 @@ BSSize bs_size_new_from_str (const char *size_str, BSError **error) {
         status = pcre2_get_error_message (errorcode, error_buffer, ERROR_BUFFER_LEN);
         switch (status) {
             case PCRE2_ERROR_BADDATA:
-                // unknown/invalid error code
+                /* unknown/invalid error code */
                 set_error (error, BS_ERROR_INVALID_SPEC,
                            strdup_printf ("Failed to compile pattern at offset %d: Unknown error.", erroffset));
                 break;
             case PCRE2_ERROR_NOMEMORY:
-                // error buffer is too short
+                /* error buffer is too short */
                 set_error (error, BS_ERROR_INVALID_SPEC,
                            strdup_printf ("Failed to compile pattern at offset %d: %s (truncated)", erroffset, error_buffer));
                 break;
@@ -474,6 +490,11 @@ BSSize bs_size_new_from_str (const char *size_str, BSError **error) {
     }
 
     loc_size_str = replace_char_with_str (size_str, '.', radix_char);
+    if (!loc_size_str) {
+        set_error (error, BS_ERROR_INVALID_SPEC, strdup_printf ("Failed to parse size spec: %s", size_str));
+        pcre2_code_free (regex);
+        return NULL;
+    }
     str_len = strlen (loc_size_str);
 
     match_data = pcre2_match_data_create_from_pattern (regex, NULL);
@@ -564,8 +585,9 @@ BSSize bs_size_new_from_size (const BSSize size) {
  *****************/
 /**
  * bs_size_get_bytes:
- * @sgn: (allow-none) (out): sign of the @size - -1, 0 or 1 for negative, zero or positive
- *                           size respectively
+ * @sgn: (out) (optional): sign of the @size - -1, 0 or 1 for negative, zero or positive
+ *                         size respectively
+ * @error: (out) (optional): place to store error (if any)
  *
  * Get the number of bytes of the @size.
  *
@@ -630,6 +652,7 @@ char* bs_size_get_bytes_str (const BSSize size) {
 /**
  * bs_size_convert_to:
  * @unit: the unit to convert @size to
+ * @error: (out) (optional): place to store error (if any)
  *
  * Get the @size converted to @unit as a string representing a floating-point
  * number.
@@ -663,7 +686,7 @@ char* bs_size_convert_to (const BSSize size, BSUnit unit, BSError **error) {
     }
 
     if (!found_match) {
-        set_error (error, BS_ERROR_INVALID_SPEC, "Invalid unit spec given");
+        set_error (error, BS_ERROR_INVALID_SPEC, strdup ("Invalid unit spec given"));
         mpf_clear (divisor);
         return NULL;
     }
@@ -907,6 +930,7 @@ BSSize bs_size_grow_mul_int (BSSize size, uint64_t times) {
 
 /**
  * bs_size_mul_float_str:
+ * @error: (out) (optional): place to store error (if any)
  *
  * Multiply @size by the floating-point number @float_str represents.
  *
@@ -948,6 +972,7 @@ BSSize bs_size_mul_float_str (const BSSize size, const char *float_str, BSError 
 
 /**
  * bs_size_grow_mul_float_str:
+ * @error: (out) (optional): place to store error (if any)
  *
  * Grow @size by the floating-point number @float_str represents times. IOW,
  * multiply @size by @float_str in-place.
@@ -988,7 +1013,8 @@ BSSize bs_size_grow_mul_float_str (BSSize size, const char *float_str, BSError *
 
 /**
  * bs_size_div:
- * @sgn: (allow-none) (out): sign of the result
+ * @sgn: (out) (optional): sign of the result
+ * @error: (out) (optional): place to store error (if any)
  *
  * Divide @size1 by @size2. Gives the answer to the question "How many times
  * does @size2 fit in @size1?".
@@ -1023,6 +1049,7 @@ uint64_t bs_size_div (const BSSize size1, const BSSize size2, int *sgn, BSError 
 
 /**
  * bs_size_div_int:
+ * @error: (out) (optional): place to store error (if any)
  *
  * Divide @size by @divisor. Gives the answer to the question "What is the size
  * of each chunk if @size is split into a @divisor number of pieces?"
@@ -1052,6 +1079,7 @@ BSSize bs_size_div_int (const BSSize size, uint64_t divisor, BSError **error) {
 
 /**
  * bs_size_shrink_div_int:
+ * @error: (out) (optional): place to store error (if any)
  *
  * Shrink @size by dividing by @divisor. IOW, divide @size by @divisor in-place.
  *
@@ -1079,6 +1107,7 @@ BSSize bs_size_shrink_div_int (BSSize size, uint64_t divisor, BSError **error) {
 
 /**
  * bs_size_true_div:
+ * @error: (out) (optional): place to store error (if any)
  *
  * Divides @size1 by @size2.
  *
@@ -1111,6 +1140,7 @@ char* bs_size_true_div (const BSSize size1, const BSSize size2, BSError **error)
 
 /**
  * bs_size_true_div_int:
+ * @error: (out) (optional): place to store error (if any)
  *
  * Divides @size by @divisor.
  *
@@ -1147,6 +1177,7 @@ char* bs_size_true_div_int (const BSSize size, uint64_t divisor, BSError **error
 
 /**
  * bs_size_mod:
+ * @error: (out) (optional): place to store error (if any)
  *
  * Gives @size1 modulo @size2 (i.e. the remainder of integer division @size1 /
  * @size2). Gives the answer to the question "If I split @size1 into chunks of
@@ -1183,6 +1214,7 @@ BSSize bs_size_mod (const BSSize size1, const BSSize size2, BSError **error) {
  * @dir: %BS_ROUND_DIR_UP to round up (to the nearest multiple of @round_to
  *       bigger than @size) or %BS_ROUND_DIR_DOWN to round down (to the
  *       nearest multiple of @round_to smaller than @size)
+ * @error: (out) (optional): place to store error (if any)
  *
  * Round @size to the nearest multiple of @round_to according to the direction
  * given by @dir.
@@ -1234,7 +1266,7 @@ BSSize bs_size_round_to_nearest (const BSSize size, const BSSize round_to, BSRou
  * functions.
  *
  * Returns: -1, 0, or 1 if @size1 is smaller, equal to or bigger than
- *          @size2 respectively comparing absolute values if @abs is %true
+ *          @size2 respectively comparing absolute values if @abs is %TRUE
  */
 int bs_size_cmp (const BSSize size1, const BSSize size2, bool abs) {
     int ret = 0;
@@ -1258,7 +1290,7 @@ int bs_size_cmp (const BSSize size1, const BSSize size2, bool abs) {
  * @bytes. This function behaves like the standard *cmp*() functions.
  *
  * Returns: -1, 0, or 1 if @size is smaller, equal to or bigger than
- *          @bytes respectively comparing absolute values if @abs is %true
+ *          @bytes respectively comparing absolute values if @abs is %TRUE
  */
 int bs_size_cmp_bytes (const BSSize size, uint64_t bytes, bool abs) {
     int ret = 0;

@@ -1,0 +1,3 @@
+Tests: unittests
+Depends: @, locales-all
+Restrictions: allow-stderr

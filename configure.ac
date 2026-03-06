@@ -1,6 +1,6 @@
 # configure.ac for libbytesize
 
-AC_INIT([libbytesize], [2.6], [vpodzime@redhat.com])
+AC_INIT([libbytesize], [2.12], [], [], [https://github.com/storaged-project/libbytesize])
 
 # Disable building static libraries.
 # This needs to be set before initializing automake
@@ -59,7 +59,7 @@ AC_ARG_WITH([python3],
 AC_SUBST(WITH_PYTHON3, 0)
 if test "x$with_python3" != "xno"; then
     AC_PATH_PROG([python3], [python3], [no])
-    AS_IF([test "x$python3" == "xno"],
+    AS_IF([test "x$python3" = "xno"],
     [if test "x$with_python3" = "xyes"; then
       LIBBYTESIZE_SOFT_FAILURE([Python3 support requested, but python3 is not available])
       fi],
@@ -77,7 +77,7 @@ AC_ARG_WITH([gtk-doc],
 AC_SUBST(WITH_GTK_DOC, 0)
 if test "x$with_gtk_doc" != "xno"; then
     AC_PATH_PROG([gtkdoc_scan], [gtkdoc-scan], [no])
-    AS_IF([test "x$gtkdoc_scan" == "xno"],
+    AS_IF([test "x$gtkdoc_scan" = "xno"],
     [if test "x$with_gtk_doc" = "xyes"; then
       LIBBYTESIZE_SOFT_FAILURE([Building documentation with gtk-doc requested, but not available])
       fi],
@@ -97,6 +97,8 @@ AS_IF([test "x$with_tools" != "xno"],
 AS_IF([test "x$with_tools" != "xno" && test "x$with_python3" != "xyes"],
       [LIBBYTESIZE_SOFT_FAILURE([Tools require Python3 bindings])],
       [])
+
+LIBBYTESIZE_FAILURES
 
 AC_OUTPUT
 
@@ -124,4 +126,3 @@ echo "
         tools:                      ${with_tools}
 "
 
-LIBBYTESIZE_FAILURES

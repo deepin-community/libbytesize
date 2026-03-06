@@ -1,3 +1,111 @@
+libbytesize (2.12-1) unstable; urgency=medium
+
+  * Team upload
+  * New upstream version 2.12
+  * Drop Rules-Requires-Root: no.
+    No longer necessary as "no" is now the default.
+  * Update debian/copyright.
+    Remove reference to the old FSF postal address and refer to
+    https://www.gnu.org/licenses/ instead.
+
+ -- Michael Biebl <biebl@debian.org>  Thu, 04 Dec 2025 17:45:56 +0100
+
+libbytesize (2.11-3) unstable; urgency=medium
+
+  * Team upload
+  * Rename debian-branch to debian/latest as per DEP-14
+  * Bump Standards-Version to 4.7.2
+
+ -- Michael Biebl <biebl@debian.org>  Fri, 15 Aug 2025 20:18:24 +0200
+
+libbytesize (2.11-2) unstable; urgency=medium
+
+  * Team upload
+
+  [ Sebastien Bacher ]
+  * enable upstream tests during the build and as autopkgtests
+
+ -- Michael Biebl <biebl@debian.org>  Tue, 25 Feb 2025 13:24:38 +0100
+
+libbytesize (2.11-1) unstable; urgency=medium
+
+  * Team upload
+  * New upstream version 2.11
+
+ -- Michael Biebl <biebl@debian.org>  Wed, 21 Aug 2024 19:55:03 +0200
+
+libbytesize (2.10-2) unstable; urgency=medium
+
+  * Team upload
+  * Drop extraneous dependency on python3-six from python3-bytesize.
+    No longer needed since 2.10. (Closes: #1069013)
+  * Bump Standards-Version to 4.7.0
+
+ -- Michael Biebl <biebl@debian.org>  Mon, 15 Apr 2024 12:42:24 +0200
+
+libbytesize (2.10-1) unstable; urgency=medium
+
+  * Team upload
+
+  [ Sebastien Bacher ]
+  * Set 'Rules-Requires-Root: no' and add whitespaces to descriptions
+
+  [ Michael Biebl ]
+  * New upstream version 2.10
+  * Request standard CI on salsa.debian.org
+
+ -- Michael Biebl <biebl@debian.org>  Mon, 23 Oct 2023 19:35:50 +0200
+
+libbytesize (2.9-1) unstable; urgency=medium
+
+  * Team upload
+  * New upstream version 2.9
+
+ -- Michael Biebl <biebl@debian.org>  Sat, 08 Jul 2023 00:40:56 +0200
+
+libbytesize (2.8-2) unstable; urgency=medium
+
+  * Team upload
+  * Use DEB_PYTHON_INSTALL_LAYOUT="deb" to get the correct Python library
+    path.
+    Instead of reverting back to distutils, set
+    DEB_PYTHON_INSTALL_LAYOUT="deb" in debian/rules to get the correct
+    sysconfig scheme on Debian.
+
+ -- Michael Biebl <biebl@debian.org>  Thu, 29 Jun 2023 02:37:48 +0200
+
+libbytesize (2.8-1) unstable; urgency=medium
+
+  * Team upload
+  * New upstream version 2.8
+  * Use dh-sequence-python3 Build-Depends to enable the python3 addon
+  * Bump Standards-Version to 4.6.2
+
+ -- Michael Biebl <biebl@debian.org>  Tue, 13 Jun 2023 19:21:00 +0200
+
+libbytesize (2.7-1) unstable; urgency=medium
+
+  * Team upload
+
+  [ Debian Janitor ]
+  * Trim trailing whitespace.
+  * Use canonical URL in Vcs-Browser.
+  * Remove Section on libbytesize1, Section on libbytesize-common that
+    duplicate source.
+
+  [ Michael Biebl ]
+  * New upstream version 2.7
+  * Bump Standards-Version to 4.6.1
+  * Drop no longer needed override for dh_missing.
+    In compat 13 and later, --fail-missing is the default.
+  * Use execute_before instead of override for dh_install
+  * Revert "Do not use distutils to get Python library path"
+    Otherwise the library path is not set properly with Python 3.10 on Debian.
+  * Add a symbols file for libbytesize1
+  * Tweak long package description a bit to please lintian
+
+ -- Michael Biebl <biebl@debian.org>  Fri, 02 Sep 2022 12:53:58 +0200
+
 libbytesize (2.6-1) unstable; urgency=medium
 
   * Team upload
