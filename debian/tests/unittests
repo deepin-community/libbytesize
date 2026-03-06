@@ -1,0 +1,5 @@
+#!/bin/sh
+
+sed "s/@WITH_PYTHON3@/1/g" tests/libbytesize_unittest.sh.in > tests/libbytesize_unittest.sh
+
+/bin/sh tests/libbytesize_unittest.sh

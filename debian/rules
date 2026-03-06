@@ -4,9 +4,10 @@ DPKG_EXPORT_BUILDFLAGS = 1
 include /usr/share/dpkg/default.mk
 
 export DEB_BUILD_MAINT_OPTIONS = hardening=+all
+export DEB_PYTHON_INSTALL_LAYOUT = deb
 
 %:
-	dh $@ --with python3
+	dh $@
 
 override_dh_auto_configure:
 	dh_auto_configure -- \
@@ -14,11 +15,9 @@ override_dh_auto_configure:
 		--without-tools
 
 override_dh_auto_test:
+ifeq (,$(filter nocheck,$(DEB_BUILD_OPTIONS)))
+	PYTHONPATH=src/python/ LD_LIBRARY_PATH=src/.libs/ ./tests/libbytesize_unittest.sh
+endif
 
-override_dh_install:
+execute_before_dh_install:
 	find debian/tmp -name '*.la' -print -delete
-	dh_install
-
-override_dh_missing:
-	dh_missing --fail-missing
-

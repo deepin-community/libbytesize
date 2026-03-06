@@ -1,3 +1,175 @@
+Libbytesize 2.12
+----------------
+
+Vojtech Trefny (8):
+
+- packit: Bump release only for daily Copr builds
+- tests: Split locale tests into multiple test cases
+- misc: Separate Ansible tasks into a different file
+- misc: Add build and test dependecies for CentOS
+- misc: Use --break-system-packages for pip on Debian
+- misc: Do not use "with_items" when installing packages
+- HACKING: Update directions for updating documentation
+- Fix compilation with C23
+
+dependabot[bot] (3):
+
+- infra: bump actions/checkout from 4 to 5
+- infra: bump actions/upload-artifact from 4 to 5
+- infra: bump actions/checkout from 5 to 6
+
+Libbytesize 2.11
+----------------
+
+Alexandre Detiste (1):
+
+- remove dependency on python3-six and python2 crumbs
+
+Vojtech Trefny (8):
+
+- dist: Fix release number in spec
+- Squashed 'translation-canary/' changes from 4d4e65b..5bb8125
+- ci: Bump actions/checkout from v3 to v4
+- Rename 'master' branch to 'main'
+- New version - 2.10
+- ci: Set custom release number for Packit
+- ci: Update CentOS Stream repositories for Packit
+- ci: Add dependabot to automatically update GH actions
+
+Weblate (1):
+
+- Update translation files
+
+Weblate Translation Memory (1):
+
+- Translated using Weblate (Sinhala)
+
+dependabot[bot] (1):
+
+- infra: bump actions/upload-artifact from 3 to 4
+
+triallax (1):
+
+- tests: remove unnecessary bash dependency
+
+김인수 (4):
+
+- Translated using Weblate (Korean)
+- Added translation using Weblate (Japanese)
+- Translated using Weblate (Japanese)
+- Translated using Weblate (Korean)
+
+Libbytesize 2.10
+----------------
+
+Alexandre Detiste (1):
+
+- remove dependency on python3-six and python2 crumbs
+
+Vojtech Trefny (4):
+
+- dist: Fix release number in spec
+- Squashed 'translation-canary/' changes from 4d4e65b..5bb8125
+- ci: Bump actions/checkout from v3 to v4
+- Rename 'master' branch to 'main'
+
+Libbytesize 2.9
+---------------
+
+Tomas Bzatek (1):
+
+- build: Exit before AC_OUTPUT on error
+
+Vojtech Trefny (1):
+
+- ci: Manually prepare spec file for Packit
+
+Weblate (1):
+
+- Update translation files
+
+triallax (1):
+
+- tests: fix locale tests on musl
+
+김인수 (1):
+
+- Translated using Weblate (Korean)
+
+Libbytesize 2.8
+---------------
+
+Baurzhan Muftakhidinov (2):
+
+- Added translation using Weblate (Kazakh)
+- Translated using Weblate (Kazakh)
+
+Temuri Doghonadze (2):
+
+- Added translation using Weblate (Georgian)
+- Translated using Weblate (Georgian)
+
+Vojtech Trefny (24):
+
+- Sync spec with downstream
+- README: Remove the Travis CI badge
+- Add a GitHub action for running csmock static analysis
+- ci: Run rpmbuild tests in GitHub actions
+- ci: Update the csmock GitHub actions configuration
+- ci: Rename csmock.Dockerfile to ci.Dockerfile
+- ci: Update Fedora versions for RPM build tests
+- spec: Change license string to the SPDX format required by Fedora
+- misc: Remove "warn: false" from Ansible "command"
+- ci: Update chroots for RPM builds
+- configure.ac: Remove invalid email address for bug reports
+- ci: Add Packit configuration for RPM builds on pull requests
+- ci: Remove GitHub action for RPM builds
+- ci: Use Packit for daily builds in Copr
+- spec: Bump release to 21 for Packit daily builds
+- ci: Add Packit automation for downstream builds
+- spec: Fix source archive URL
+- Make use of error optional
+- Replace C++ style comments with C style
+- Various docstring fixes
+- docs: Remove information about Python 2 support
+- Remove unused test dependencies variables from Makefile
+- Do not hardcode pylint executable name in Makefile
+- ci: Do not use release descriptions for Packit builds
+
+Weblate (1):
+
+- Update translation files
+
+김인수 (1):
+
+- Translated using Weblate (Korean)
+
+Libbytesize 2.7
+---------------
+
+Gogo Gogsi (2):
+
+- Added translation using Weblate (Croatian)
+- Translated using Weblate (Croatian)
+
+Sam James (1):
+
+- build: avoid bashisms in configure
+
+Vojtech Trefny (6):
+
+- Do not use distutils to get Python library path
+- Revert "Translations update from Weblate"
+- Fix warnings dicovered by the GCC analyzer
+- Fix some warnings and typos in docstrings and comments
+- Remove Travis CI configuration
+- Fix skipping tests when required locale is missing
+
+Weblate (2):
+
+- Update translation files
+- Update translation files
+
 Libbytesize 2.6
 ---------------
 
